@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentJunction_API", "RentJunction_API\RentJunction_API.csproj", "{F6C46AC7-F18D-4AE2-A204-F7A7906323BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentJunction_Tests", "RentJunction_Tests\RentJunction_Tests.csproj", "{CC607F18-BE6E-4D83-94A1-554EB9B3C202}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6C46AC7-F18D-4AE2-A204-F7A7906323BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C46AC7-F18D-4AE2-A204-F7A7906323BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C46AC7-F18D-4AE2-A204-F7A7906323BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C46AC7-F18D-4AE2-A204-F7A7906323BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC607F18-BE6E-4D83-94A1-554EB9B3C202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC607F18-BE6E-4D83-94A1-554EB9B3C202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC607F18-BE6E-4D83-94A1-554EB9B3C202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC607F18-BE6E-4D83-94A1-554EB9B3C202}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6F45A2A-DF94-4468-9772-F54C719658C3}
+	EndGlobalSection
+EndGlobal
