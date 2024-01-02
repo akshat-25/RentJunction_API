@@ -1,8 +1,10 @@
 ﻿using RentJunction_API.Models.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RentJunction_API.Models.ViewModels
 {
+  
     public class RegisterDTO
     {
         [Required]

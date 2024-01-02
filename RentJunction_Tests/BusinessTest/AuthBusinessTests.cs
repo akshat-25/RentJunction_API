@@ -6,8 +6,7 @@ using RentJunction_API.Business;
 using RentJunction_API.DataAccess.Interface;
 using RentJunction_API.Models.Enums;
 using RentJunction_API.Models.ViewModels;
-using System.Runtime.InteropServices;
-using System.Security.Claims;
+using System;
 using System.Threading.Tasks;
 
 namespace RentJunction_Tests.BusinessTest
@@ -52,13 +51,35 @@ namespace RentJunction_Tests.BusinessTest
             }, true));
 
             task.Wait();
-            var result = task.Result;
 
-            Assert.IsTrue(result);
+            mockUserData.Verify(u => u.CreateUserAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()), Times.Once);
+            
         }
 
         [TestMethod]
-        public void Login_LoginSuccesful_ReturnTrue()
+
+        public async Task AddUserAsync_InvalidDetails_ShouldThrowException()
+        {
+            userManagerMock.Setup(x => x.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()));
+            mockUserData.Setup(x => x.CreateUserAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()));
+
+            await Assert.ThrowsExceptionAsync<Exception>(() => business.AddUserAsync(new RegisterDTO
+            {
+                UserName = "testUser",
+                Email = "test@example.com",
+                PhoneNumber = "1234567890",
+                Password = "password123",
+                FirstName = "Test",
+                LastName = "User",
+                City = "City",
+                RoleId = RolesEnum.Admin
+            }, false));
+
+
+        }
+
+        [TestMethod]
+        public void Login_ValidDetails_LoginSuccesful()
         {
             signInManagerMock.Setup(x => x.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                  .ReturnsAsync(SignInResult.Success);
@@ -72,25 +93,40 @@ namespace RentJunction_Tests.BusinessTest
 
             task.Wait();
 
-            var result = task.Result;
-
-            Assert.IsTrue(result);
+            signInManagerMock.Verify(u => u.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()),Times.Once);
+            
         }
 
         [TestMethod]
 
-        public void Logout_LogoutSuccess_ReturnTrue()
+        public async Task Login_InvalidDetails_ShouldThrowException()
         {
-            signInManagerMock.Setup(x => x.SignOutAsync()).Returns(Task.FromResult(true));
+            signInManagerMock.Setup(x => x.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()));
+
+            await Assert.ThrowsExceptionAsync<Exception>(() => business.Login(
+            new LoginDTO
+            {
+                Username = "InvalidUser",
+                Password = "WrongPasssword"
+
+            }));
+
+        }
+        
+        [TestMethod]
+
+        public void Logout_LogoutSuccess()
+        {
+            signInManagerMock.Setup(x => x.SignOutAsync());
 
             var task = Task.Run(async () => await business.Logout());
 
             task.Wait();
 
-            var result = task.Result;
-
-            Assert.IsTrue(result);
+            signInManagerMock.Verify(u => u.SignOutAsync());
 
         }
+
+   
     }
 }

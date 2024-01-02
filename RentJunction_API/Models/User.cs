@@ -2,10 +2,12 @@
 using RentJunction_API.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace RentJunction_API.Models
 {
+    [ExcludeFromCodeCoverage]
     public class User
     {
         public int Id { get; set; }

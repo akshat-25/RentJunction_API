@@ -26,7 +26,7 @@ namespace RentJunction_API.Business
             this.userData = userData;
             this.rentalData = rentalData;
         }
-    
+   
         public IQueryable<Product> GetProducts(string city, int? categoryId)
         {
             IQueryable<Product> products = productsData.GetProducts();
@@ -46,12 +46,17 @@ namespace RentJunction_API.Business
                 products = productsData.GetProducts();
             }
 
+            if(products.Count() == 0)
+            {
+                throw new Exception("No Products Available..");
+            }
+
             return products;
 
         }
-        public bool AddProduct(AddProductDTO product,string username)
-        {
-            var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
+        public void AddProduct(AddProductDTO product,string username)
+        {   
+                var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
             
                 Product newProduct = new Product()
                 {
@@ -63,8 +68,8 @@ namespace RentJunction_API.Business
                     UserId = userId
                 };
 
-            productsData.AddProduct(newProduct);
-            return true;
+                productsData.AddProduct(newProduct);
+                    
         }
 
         public IQueryable<Product> ViewListedProducts(string username)
@@ -73,22 +78,30 @@ namespace RentJunction_API.Business
 
             var products = productsData.GetProducts().Where(p => p.UserId.Equals(userId));
 
+            if(products.Count() == 0)
+            {
+                throw new Exception("No Products Available..");
+            }
             return products;
         }
       
-        public bool DeleteProduct(string username,int productId)
+        public void DeleteProduct(string username,int productId)
         {
             var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
 
             var products = productsData.GetProducts().Where(p => p.UserId.Equals(userId));
-
-            if (products.Count() == 0) return false;
             
             var deleteProduct = products.FirstOrDefault(p => p.Id.Equals(productId));
+            if ( deleteProduct == null)
+            {
+              throw new Exception("No Products available !!");    
+            }
 
-            productsData.DeleteProduct(deleteProduct);
-
-            return true;
+            else
+            {
+                productsData.DeleteProduct(deleteProduct);
+            }
+            
         }
 
         public Product ViewProductDetail(int productId)
@@ -102,7 +115,7 @@ namespace RentJunction_API.Business
             return product;
         }
 
-        public bool UpdateProduct(int id, AddProductDTO product, string username)
+        public void UpdateProduct(int id, AddProductDTO product, string username)
         {
             var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
 
@@ -110,21 +123,20 @@ namespace RentJunction_API.Business
 
             var updateProduct = products.FirstOrDefault(product => product.Id == id);
 
-            if (updateProduct != null)
-            {
-                updateProduct.Name = product.Name;
-                updateProduct.City = product.City;
-                updateProduct.Description = product.Description;
-                updateProduct.Rent = product.Rent;
-                productsData.SaveChanges();
-                return true;
-            }
+            if (updateProduct == null)
+                throw new Exception("No Product Found");
 
-            return false;
+
+            updateProduct.Name = product.Name;
+            updateProduct.City = product.City;
+            updateProduct.Description = product.Description;
+            updateProduct.Rent = product.Rent;
+            productsData.SaveChanges();
+            
 
         }
 
-        public bool RentProduct(int id, RentProductDTO model, string username)
+        public void RentProduct(int id, RentProductDTO model, string username)
         {
             var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
 
@@ -138,12 +150,12 @@ namespace RentJunction_API.Business
 
             if (!isValidstartDate && ! isValidEndDate && !(startDate < DateTime.Today) && (startDate > endDate))
             {
-                return false;
+                throw new Exception("Start/End date is invalid..");
             }
 
             if (startDate.Equals(endDate))
             {
-                return false;
+                throw new Exception("Start and end date cannot be same..");
             }
 
             var rental = new Rental()
@@ -156,11 +168,11 @@ namespace RentJunction_API.Business
             };
 
             rentalData.AddRental(rental);
-            return true;
+           
 
         }
 
-        public bool ExtendRentPeriod(int id, [FromBody] ExtendRentDTO model,string username)
+        public void ExtendRentPeriod(int id, [FromBody] ExtendRentDTO model,string username)
         {
             var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
 
@@ -168,7 +180,7 @@ namespace RentJunction_API.Business
 
             var product = productsData.GetProducts().FirstOrDefault(product => product.Id == id);
 
-            if(rentalProduct == null) { return false; }
+            if(rentalProduct == null) { throw new Exception("No Product Found.."); }
 
             DateTime prevEndDate;
             DateTime newEndDate;
@@ -178,7 +190,7 @@ namespace RentJunction_API.Business
 
             if(!isValidPrevEndDate && !isValidNewEndDate || (prevEndDate > newEndDate) )
             {
-                return false;
+                throw new Exception("Invalid Start/End Date");
             }
 
             rentalProduct.EndDate = newEndDate.ToString();
@@ -186,7 +198,7 @@ namespace RentJunction_API.Business
 
             productsData.SaveChanges();
 
-            return true;
+          
 
         }
     }

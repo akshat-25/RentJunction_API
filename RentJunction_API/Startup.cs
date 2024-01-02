@@ -25,9 +25,7 @@ namespace RentJunction_API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
-
-        
+        }  
         private async Task CreateUserRole(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -87,6 +85,7 @@ namespace RentJunction_API
             }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
+
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -94,36 +93,8 @@ namespace RentJunction_API
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Showing API V1");
             });
 
-
             app.UseRouting();
-            //app.Use(async (context, next) =>
-            //{
-            //    var endpoint = context.GetEndpoint();
-
-            //    if (endpoint != null)
-            //    {
-            //        await context.Response.WriteAsync(" Endpoint :" + endpoint.DisplayName + "\n");
-
-            //        if (endpoint is RouteEndpoint routeEndpoint)
-            //        {
-            //            await context.Response.WriteAsync(" Route Pattern :" + routeEndpoint.RoutePattern.RawText + "\n");
-            //        }
-            //        foreach (var metadata in endpoint.Metadata)
-            //        {
-            //            await context.Response.WriteAsync("metadata : " + metadata + "\n");
-
-            //        }
-            //    }
-            //    else
-            //    {
-            //        await context.Response.WriteAsync("End point is null");
-
-            //    }
-
-            //    await next();
-            //}
-            //);
-
+           
             app.UseAuthentication();
 
             app.UseAuthorization();

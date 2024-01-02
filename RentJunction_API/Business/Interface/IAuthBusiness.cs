@@ -5,8 +5,8 @@ namespace RentJunction_API.Business.Interface
 {
     public interface IAuthBusiness
     {
-        Task<bool> AddUserAsync(RegisterDTO model,bool isAdmin);
-        Task<bool> Login(LoginDTO model);
-        Task<bool> Logout();
+        Task AddUserAsync(RegisterDTO model,bool isAdmin);
+        Task Login(LoginDTO model);
+        Task Logout();
     }
 }

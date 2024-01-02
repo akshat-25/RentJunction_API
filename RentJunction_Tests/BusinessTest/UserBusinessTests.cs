@@ -5,6 +5,7 @@ using RentJunction_API.Business;
 using RentJunction_API.DataAccess;
 using RentJunction_API.DataAccess.Interface;
 using RentJunction_API.Models;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,11 +34,12 @@ namespace RentJunction_Tests.BusinessTest
         {
             mockUserData.Setup(x => x.GetUsers()).Returns(MockData.customersList.AsQueryable);
 
-            var result = business.GetCustomers();
+            var result = business.GetCustomers( );
 
             Assert.IsNotNull(result);
         }
 
+       
         [TestMethod]
         public void GetOwners_FetchedOwnerList_ReturnsList()
         {
@@ -49,10 +51,10 @@ namespace RentJunction_Tests.BusinessTest
         }
 
         [TestMethod]
-        public void DeleteUser_DeleteUserFromRecords_ReturnsTrue()
-        {
 
-            mockUserData.Setup(x => x.DeleteUser(It.IsAny<User>(), It.IsAny<IdentityUser>())).Returns(Task.FromResult(true));
+        public void DeleteUser_ValidId_ShouldDeleteUser()
+        {
+            mockUserData.Setup(x => x.DeleteUser(It.IsAny<User>(), It.IsAny<IdentityUser>()));
             mockUserData.Setup(x => x.GetUsers()).Returns(MockData.ownerList.AsQueryable);
 
             userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).Returns(Task.FromResult(MockData.identityUsers[0]));
@@ -61,9 +63,17 @@ namespace RentJunction_Tests.BusinessTest
 
             task.Wait();
 
-            var result = task.Result;
+            mockUserData.Verify(u => u.DeleteUser(It.IsAny<User>(), It.IsAny<IdentityUser>()), Times.Once);
+        }
 
-            Assert.IsTrue(result);
+        [TestMethod]
+
+        public async Task DeleteUser_IdNotExist_ShouldThrowException()
+        {
+            mockUserData.Setup(x => x.DeleteUser(It.IsAny<User>(), It.IsAny<IdentityUser>()));
+            mockUserData.Setup(x => x.GetUsers()).Returns(MockData.ownerList.AsQueryable);
+
+            await Assert.ThrowsExceptionAsync<Exception>(() => business.DeleteUser(111));
 
         }
     }

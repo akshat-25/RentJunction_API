@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using RentJunction_API.Data;
 using RentJunction_API.DataAccess;
 using RentJunction_API.Models;
@@ -11,23 +10,19 @@ namespace RentJunction_Tests.DataAccessTest
     [TestClass]
     public class ProductDataTests
     {
-        private Mock<AppDbContext> mockDbContext;
         private ProductsData productDb;
         private DbContextOptions<AppDbContext> options;
         private AppDbContext dbContext;
 
         [TestInitialize]
-
         public void TestInitialize()
         {
-           mockDbContext = new Mock<AppDbContext>();
            options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "InMemoryDatabase").Options;
            dbContext = new AppDbContext(options);
-
-           
-
-            productDb = new ProductsData(dbContext);
+           productDb = new ProductsData(dbContext);
         }
+
+
         [TestMethod]
         public void GetProducts()
         {
@@ -45,7 +40,6 @@ namespace RentJunction_Tests.DataAccessTest
 
             Assert.IsNotNull(products);  
             Assert.AreEqual(1, products.Count());
-            
         }
 
         [TestMethod]
@@ -75,8 +69,6 @@ namespace RentJunction_Tests.DataAccessTest
 
             Assert.AreEqual(0, productDb.GetProducts().Count());
         }
-
-
     }
     
 }

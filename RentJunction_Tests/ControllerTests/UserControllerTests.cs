@@ -22,6 +22,7 @@ namespace RentJunction_Tests.ControllerTests
             mockUserBusiness = new Mock<IUserBusiness>();
             controller = new UserController(mockUserBusiness.Object);
         }
+
         [TestMethod]
         public void GetCustomers()
         { 
@@ -43,9 +44,9 @@ namespace RentJunction_Tests.ControllerTests
         }
 
         [TestMethod]
-        public void DeleteUser()
+        public void DeleteUser_ValidId_ShouldDeleteUser()
         {
-            mockUserBusiness.Setup(x => x.DeleteUser(It.IsAny<int>())).Returns(Task.FromResult(true));
+            mockUserBusiness.Setup(x => x.DeleteUser(It.IsAny<int>()));
 
             var task = Task.Run(async () => await controller.DeleteUser(1));
             task.Wait();

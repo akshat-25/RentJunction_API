@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentJunction_API.Business.Interface;
 using RentJunction_API.CustomFilters;
 using RentJunction_API.Helper;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -63,18 +64,19 @@ namespace RentJunction_API.Controllers
         {
             try
             {
-                if (await userBusiness.DeleteUser(id))
-                {
-                    return Ok("Customer Deleted Successfully..");
-                }
-
+                await userBusiness.DeleteUser(id);
+                return Ok("Customer Deleted Successfully..");
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound, "User not found !");
             }
-            catch (HttpStatusCodeException ex)
+            catch (HttpStatusCodeException exception)
             {
-                throw ex;
+                throw exception;
             }
-            
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+
         }
     }
 }

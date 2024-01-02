@@ -1,11 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace RentJunction_API.Models
-{  
+{
+    [ExcludeFromCodeCoverage]
     public class Rental
     {
+
         public int Id { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }

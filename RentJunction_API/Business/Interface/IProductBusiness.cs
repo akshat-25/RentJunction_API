@@ -7,13 +7,13 @@ namespace RentJunction_API.Business.Interface
 {
     public interface IProductBusiness
     {
-        bool AddProduct(AddProductDTO product,string username);
+        void AddProduct(AddProductDTO product,string username);
         IQueryable<Product> GetProducts(string city, int? categoryId);
         IQueryable<Product> ViewListedProducts(string username);
-        bool DeleteProduct(string username,int productId);
+        void DeleteProduct(string username,int productId);
         public Product ViewProductDetail(int productId);
-        bool UpdateProduct(int id, AddProductDTO product, string username);
-        bool RentProduct(int id, RentProductDTO model, string username);
-        bool ExtendRentPeriod(int id, [FromBody] ExtendRentDTO model, string username);
+        void UpdateProduct(int id, AddProductDTO product, string username);
+        void RentProduct(int id, RentProductDTO model, string username);
+        void ExtendRentPeriod(int id, [FromBody] ExtendRentDTO model, string username);
     }
 }

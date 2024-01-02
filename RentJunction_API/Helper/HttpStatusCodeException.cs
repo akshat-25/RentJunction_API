@@ -13,7 +13,6 @@ namespace RentJunction_API.Helper
         {
             StatusCode = statusCode;
         }
-
         public HttpStatusCodeException(HttpStatusCode statusCode, string message) : base(message)
         {
             StatusCode = statusCode;

@@ -4,8 +4,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RentJunction_API.Business.Interface;
 using RentJunction_API.Controllers;
+using RentJunction_API.Helper;
 using RentJunction_API.Models.Enums;
 using RentJunction_API.Models.ViewModels;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
      
@@ -34,14 +36,13 @@ namespace RentJunction_Tests.ControllerTests
 
             };
         }
-        
-       
+
+
         [TestMethod]
         public void Register_ValidModel_Returns201Created()
         {
             mockAuthBusiness.Setup(x => x.AddUserAsync(It.IsAny<RegisterDTO>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
 
-            MockUserClaim();
 
             var task = Task.Run(async () => await controller.Register(new RegisterDTO()
             {
@@ -67,10 +68,29 @@ namespace RentJunction_Tests.ControllerTests
         }
 
         [TestMethod]
+        public async Task Register_InternalServerError_ShouldThrowException()
+        {
+            mockAuthBusiness.Setup(x => x.AddUserAsync(It.IsAny<RegisterDTO>(), It.IsAny<bool>())).Throws(new Exception());
 
+            MockUserClaim();
+
+            await Assert.ThrowsExceptionAsync<Exception>(() => controller.Register(new RegisterDTO()
+            {
+                FirstName = "test",
+                LastName = "User",
+                Email = "testUser@gmail.com",
+                City = "testCity",
+                Password = "testpassword",
+                PhoneNumber = "1234567890",
+                RoleId = RolesEnum.Admin,
+                UserName = "testuser1"
+            }));
+
+        }
+        [TestMethod]
         public void Login_LoginSucces_Return200Ok()
         {
-            mockAuthBusiness.Setup(x => x.Login(It.IsAny<LoginDTO>())).Returns(Task.FromResult(true));
+            mockAuthBusiness.Setup(x => x.Login(It.IsAny<LoginDTO>()));
 
             var task = Task.Run(async () => await controller.Login(new LoginDTO()
             {
@@ -80,15 +100,11 @@ namespace RentJunction_Tests.ControllerTests
 
             task.Wait();
 
-            var result = task.Result;
-
-            var okResult = (OkObjectResult)result; 
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Login Successful", okResult.Value);
+            mockAuthBusiness.Verify(p => p.Login(It.IsAny<LoginDTO>()), Times.Once());
+            
         }
 
         [TestMethod]
-
         public void Logout_LogoutSuccess_Return200Ok()
         {
             mockAuthBusiness.Setup(x => x.Logout()).Returns(Task.FromResult(true));

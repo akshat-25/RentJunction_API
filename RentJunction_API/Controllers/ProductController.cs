@@ -35,9 +35,12 @@ namespace RentJunction_API.Controllers
 
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound, "No Products found!");
             }
-            catch(Exception ex)
+            catch(HttpStatusCodeException exception)
             {
-                throw ex;
+                throw exception;
+            }
+            catch (Exception exception) {
+                throw exception;
             }
         }
 
@@ -53,16 +56,17 @@ namespace RentJunction_API.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var result = productBusiness.AddProduct(product, username);
-                    if (result)
-                    {
-                        return Ok("Product Added Successfully");
-                    }
+                    productBusiness.AddProduct(product, username);
+                    return Ok("Product Added Successfully"); 
                 }
 
-                throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Bad Request");
+                throw new HttpStatusCodeException(HttpStatusCode.BadRequest,"Please enter valid details");
             }
             catch(HttpStatusCodeException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -93,25 +97,27 @@ namespace RentJunction_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [AdminAuthorizeFilter]
+        [HttpDelete("{id}")]
+        [OwnerAuthorizeFilter]
         [ServiceFilter(typeof(CustomActionFilter))]
 
         public IActionResult DeleteProduct(int productId)
         {
             try
             {
-
                 var username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
-                if (productBusiness.DeleteProduct(username, productId))
-                {
-                    return Ok("Product Deleted Successfully");
-                }
+                productBusiness.DeleteProduct(username, productId);
+                
+                return Ok("Product Deleted Successfully");
 
                 throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Delete Failed due to technical issues!");
             }
             catch(HttpStatusCodeException ex)
+            {
+                throw ex;
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }
@@ -147,20 +153,21 @@ namespace RentJunction_API.Controllers
         {
             try
             {
-                //if (!User.IsInRole("Owner")) { return StatusCode(StatusCodes.Status401Unauthorized); }
-
                 var username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
-                if (productBusiness.UpdateProduct(id, product, username))
-                {
-                    return Ok("Product Details Updated..");
-                }
-
+                productBusiness.UpdateProduct(id, product, username);
+               
+                return Ok("Product Details Updated..");
+                
                 throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Update Failed!");
             }
-            catch(HttpStatusCodeException ex)
+            catch(HttpStatusCodeException exception)
             {
-                throw ex;
+                throw exception;
+            }
+            catch(Exception exception)
+            {
+                throw exception;
             }
         }
 
@@ -175,17 +182,20 @@ namespace RentJunction_API.Controllers
                 if (ModelState.IsValid)
                 {
                     var username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    if (productBusiness.RentProduct(id, model, username))
-                    {
-                        return StatusCode(StatusCodes.Status201Created);
-                    }
+                    productBusiness.RentProduct(id, model, username);
+                    return StatusCode(StatusCodes.Status201Created);
+                    
                 }
 
                 throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Bad request!"); ;
             } 
-            catch(HttpStatusCodeException ex)
+            catch(HttpStatusCodeException exception)
             {
-                throw ex;
+                throw exception;
+            }
+            catch(Exception exception)
+            {
+                throw exception;
             }
         }
 
@@ -200,17 +210,20 @@ namespace RentJunction_API.Controllers
                 if (ModelState.IsValid)
                 {
                     var username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                    if (productBusiness.ExtendRentPeriod(id, model, username))
-                    {
-                        return StatusCode(StatusCodes.Status201Created);
-                    }
+                    productBusiness.ExtendRentPeriod(id, model, username);
+                    return StatusCode(StatusCodes.Status201Created);
+                    
                 }
                 throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Cannot extend rent period due to some technical error!");
             }
 
-            catch(HttpStatusCodeException ex)
+            catch(HttpStatusCodeException exception)
             {
-                throw ex;
+                throw exception;
+            }
+            catch(Exception exception)
+            {
+                throw exception;
             }
         }
     }

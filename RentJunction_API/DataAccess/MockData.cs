@@ -50,6 +50,16 @@ namespace RentJunction_API.DataAccess
                 PhoneNumber = "1234567890",
                 RoleId = Models.Enums.RolesEnum.Owner,
                 UserName = "test1234",
+            },
+            new User { 
+                Id = 2,
+                FirstName = "test2",
+                LastName = "abcd",
+                City = "testcity2",
+                Email = "test2@gmail.com",
+                PhoneNumber = "3214567890",
+                RoleId = Models.Enums.RolesEnum.Owner,
+                UserName = "Username",
             }
         };
         

@@ -5,6 +5,7 @@ using RentJunction_API.DataAccess.Interface;
 using RentJunction_API.Models;
 using RentJunction_API.Models.Enums;
 using RentJunction_API.Models.ViewModels;
+using System;
 using System.Threading.Tasks;
 
 namespace RentJunction_API.Business
@@ -21,7 +22,7 @@ namespace RentJunction_API.Business
             this.userData = userData;
         }
 
-        public async Task<bool> AddUserAsync(RegisterDTO model,bool isAdmin)
+        public async Task AddUserAsync(RegisterDTO model,bool isAdmin)
         {
             var appUser = new IdentityUser()
             {
@@ -51,7 +52,7 @@ namespace RentJunction_API.Business
                 }
                 else
                 {
-                    return false;
+                    throw new Exception("An error has occured. Please try again");
                 }
             }
 
@@ -71,27 +72,25 @@ namespace RentJunction_API.Business
 
                 userData.AddUser(newUser);
 
-                return true;
+               
             }
 
-            return false;
+            throw new Exception("An error has occured. Please try again");
 
         }
-        public async Task<bool> Login(LoginDTO model)
+        public async Task Login(LoginDTO model)
         {
             var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
 
-            if (result.Succeeded)
-            {  
-                return true;
+            if (result == null || !result.Succeeded )
+            {
+                throw new Exception("An error has occured. Please try again");
             }
-
-            return false;
         }
-        public async Task<bool> Logout()
+        public async Task Logout()
         {
-            await signInManager.SignOutAsync();
-            return true;
+          await signInManager.SignOutAsync();
+            
         }
     }
 }

@@ -38,8 +38,10 @@ namespace RentJunction_API.Middlewares
             string result = new ErrorResponseModel()
             {
                 Message = exception.Message,
+                StatusCode = Convert.ToInt32(HttpStatusCode.InternalServerError)
             }.ToString();
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = Convert.ToInt32(HttpStatusCode.InternalServerError);
+            
 
             return context.Response.WriteAsync(result);
         }

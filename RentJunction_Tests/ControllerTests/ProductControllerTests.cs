@@ -17,7 +17,6 @@ namespace RentJunction_Tests.ControllerTests
         private Mock<IProductBusiness> mockProductBusiness;
         private ProductController controller;
 
-
         [TestInitialize]
         public void TestInitialize()
         {
@@ -50,7 +49,7 @@ namespace RentJunction_Tests.ControllerTests
         [TestMethod]
         public void AddProduct_ProductAdded_Return200Ok()
         {
-            mockProductBusiness.Setup(x => x.AddProduct(It.IsAny<AddProductDTO>(), It.IsAny<string>())).Returns(true);
+            mockProductBusiness.Setup(x => x.AddProduct(It.IsAny<AddProductDTO>(), It.IsAny<string>()));
 
             MockUserClaims();
 
@@ -84,7 +83,7 @@ namespace RentJunction_Tests.ControllerTests
         [TestMethod]
         public void DeleteProduct_ProductDeleted_Return200Ok()
         {
-            mockProductBusiness.Setup(x => x.DeleteProduct(It.IsAny<string>(), It.IsAny<int>())).Returns(true);
+            mockProductBusiness.Setup(x => x.DeleteProduct(It.IsAny<string>(), It.IsAny<int>()));
 
             MockUserClaims();
 
@@ -112,7 +111,7 @@ namespace RentJunction_Tests.ControllerTests
 
         public void UpdateProduct_ProductUpdated_Return200Ok()
         { 
-            mockProductBusiness.Setup(x => x.UpdateProduct(It.IsAny<int>(), It.IsAny<AddProductDTO>(), It.IsAny<string>())).Returns(true);
+            mockProductBusiness.Setup(x => x.UpdateProduct(It.IsAny<int>(), It.IsAny<AddProductDTO>(), It.IsAny<string>()));
 
             MockUserClaims();
 
@@ -134,14 +133,14 @@ namespace RentJunction_Tests.ControllerTests
 
         public void RentProduct_ProductRentSuccess_Return201Createdk()
         {
-            mockProductBusiness.Setup(x => x.RentProduct(It.IsAny<int>(), It.IsAny<RentProductDTO>(), It.IsAny<string>())).Returns(true);
+            mockProductBusiness.Setup(x => x.RentProduct(It.IsAny<int>(), It.IsAny<RentProductDTO>(), It.IsAny<string>()));
 
             MockUserClaims();
 
             var result = controller.RentProduct(1,new RentProductDTO
             {
-                StartDate = "12-25-2023",
-                EndDate = "12-30-2023"
+                StartDate = "01-01-2024",
+                EndDate = "01-30-2024"
             }) as StatusCodeResult;
 
             Assert.IsNotNull(result);
@@ -153,7 +152,7 @@ namespace RentJunction_Tests.ControllerTests
 
         public void ExtendRentPeriod_RentPeriodExtended_Return200Ok()
         {
-            mockProductBusiness.Setup(x => x.ExtendRentPeriod(It.IsAny<int>(), It.IsAny<ExtendRentDTO>(), It.IsAny<string>())).Returns(true);
+            mockProductBusiness.Setup(x => x.ExtendRentPeriod(It.IsAny<int>(), It.IsAny<ExtendRentDTO>(), It.IsAny<string>()));
 
             MockUserClaims();
 

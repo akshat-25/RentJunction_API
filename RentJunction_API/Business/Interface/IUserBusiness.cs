@@ -8,6 +8,6 @@ namespace RentJunction_API.Business.Interface
     {
         IQueryable<User> GetCustomers();
         IQueryable<User> GetOwners();
-        Task<bool> DeleteUser(int id);
+        Task DeleteUser(int id);
     }
 }
