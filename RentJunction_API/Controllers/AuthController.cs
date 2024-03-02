@@ -6,6 +6,7 @@ using RentJunction_API.Helper;
 using RentJunction_API.Models.ViewModels;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RentJunction_API.Controllers
@@ -15,6 +16,7 @@ namespace RentJunction_API.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthBusiness accountBusiness;
+        private readonly HttpContext httpContext;
         public AuthController(IAuthBusiness accountBusiness)
         {  
             this.accountBusiness = accountBusiness;
@@ -56,14 +58,9 @@ namespace RentJunction_API.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    await accountBusiness.Login(model);
-
-                    return Ok("Login Successful");
-                }
-
-                throw new HttpStatusCodeException(HttpStatusCode.Unauthorized, "Login Failed!");
+                    var user =  await accountBusiness.Login(model);
+                    return StatusCode(StatusCodes.Status200OK,user);
+                    throw new HttpStatusCodeException(HttpStatusCode.Unauthorized, "Login Failed!");
             }
             catch(HttpStatusCodeException exception)
             {

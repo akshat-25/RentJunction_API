@@ -12,7 +12,7 @@ namespace RentJunction_API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
         private readonly IUserBusiness userBusiness;
         public UserController(IUserBusiness userBusiness)

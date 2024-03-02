@@ -8,6 +8,8 @@ using RentJunction_API.Helper;
 using RentJunction_API.Models.Enums;
 using RentJunction_API.Models.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
      
@@ -39,10 +41,11 @@ namespace RentJunction_Tests.ControllerTests
 
 
         [TestMethod]
-        public void Register_ValidModel_Returns201Created()
+        public void Register_AdminRole_Returns201Created()
         {
             mockAuthBusiness.Setup(x => x.AddUserAsync(It.IsAny<RegisterDTO>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
 
+            MockUserClaim();
 
             var task = Task.Run(async () => await controller.Register(new RegisterDTO()
             {
@@ -68,7 +71,48 @@ namespace RentJunction_Tests.ControllerTests
         }
 
         [TestMethod]
-        public async Task Register_InternalServerError_ShouldThrowException()
+        public void Register_NonAdminRole_Returns201Created()
+        {
+            mockAuthBusiness.Setup(x => x.AddUserAsync(It.IsAny<RegisterDTO>(), It.IsAny<bool>()));
+
+            var claims = new List<Claim>()
+            {
+              new Claim(ClaimTypes.Name, "testuser1"), 
+            };
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var principal = new ClaimsPrincipal(identity);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = principal }
+            };
+
+            var task = Task.Run(async () => await controller.Register(new RegisterDTO()
+            {
+                FirstName = "test",
+                LastName = "User",
+                Email = "testUser@gmail.com",
+                City = "testCity",
+                Password = "testpassword",
+                PhoneNumber = "1234567890",
+                RoleId = RolesEnum.Owner,
+                UserName = "testuser1"
+            }));
+
+            task.Wait();
+
+            var result = task.Result;
+
+            var okResult = (StatusCodeResult)result;
+
+            Assert.IsNotNull(result);
+
+            Assert.AreEqual(StatusCodes.Status201Created, okResult.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task Register_InvalidRoleId_ShouldThrowException()
         {
             mockAuthBusiness.Setup(x => x.AddUserAsync(It.IsAny<RegisterDTO>(), It.IsAny<bool>())).Throws(new Exception());
 
@@ -82,13 +126,15 @@ namespace RentJunction_Tests.ControllerTests
                 City = "testCity",
                 Password = "testpassword",
                 PhoneNumber = "1234567890",
-                RoleId = RolesEnum.Admin,
+                RoleId = (RolesEnum)99,
                 UserName = "testuser1"
             }));
 
+
+
         }
         [TestMethod]
-        public void Login_LoginSucces_Return200Ok()
+        public void Login_ValidDetails_Return200Ok()
         {
             mockAuthBusiness.Setup(x => x.Login(It.IsAny<LoginDTO>()));
 
@@ -102,6 +148,19 @@ namespace RentJunction_Tests.ControllerTests
 
             mockAuthBusiness.Verify(p => p.Login(It.IsAny<LoginDTO>()), Times.Once());
             
+        }
+
+        [TestMethod]
+
+        public void Login_InvalidDetails_ShouldThrowException()
+        {
+            mockAuthBusiness.Setup(x => x.Login(It.IsAny<LoginDTO>())).Throws(new HttpStatusCodeException(HttpStatusCode.Unauthorized, "Login Failed!"));
+
+            Assert.ThrowsExceptionAsync<HttpStatusCodeException>(() => controller.Login(new LoginDTO()
+            {
+                Username = "Invalid",
+                Password = "Invalid"
+            }));
         }
 
         [TestMethod]

@@ -42,6 +42,31 @@ namespace RentJunction_Tests.BusinessTest
             Assert.AreEqual(1, result.Count());
 
         }
+        [TestMethod]
+        public void GetProduct_AllProductList_ReturnsList()
+        {
+            mockProductData.Setup(x => x.GetProducts()).Returns(MockData.productList.AsQueryable());
+
+            var result = business.GetProducts(null,null);
+
+            Assert.IsNotNull(result);
+
+            Assert.AreEqual(MockData.productList.Count(), result.Count());
+
+        }
+
+        [TestMethod]
+        public void GetProduct_ProductListWithCategory_ReturnsList()
+        {
+            mockProductData.Setup(x => x.GetProducts()).Returns(MockData.productList.AsQueryable());
+
+            var result = business.GetProducts(null, 3);
+
+            Assert.IsNotNull(result);
+
+            Assert.AreEqual(MockData.productList.Count(), result.Count());
+
+        }
 
         [TestMethod]
 
@@ -154,6 +179,18 @@ namespace RentJunction_Tests.BusinessTest
         }
 
         [TestMethod]
+        public void ViewProductDetail_NoProduct_ShouldThrowException()
+        {
+
+            mockProductData.Setup(p => p.GetProducts()).Returns(MockData.productList.AsQueryable);
+            mockRentalData.Setup(r => r.GetRentalData()).Returns(MockData.rentalData.AsQueryable);
+
+            Assert.ThrowsException<Exception>(() => business.ViewProductDetail(1));
+        }
+
+
+
+        [TestMethod]
 
         public void RentProduct_RentSuccess_ShouldRentAProduct()
         {
@@ -187,6 +224,22 @@ namespace RentJunction_Tests.BusinessTest
                 StartDate = "Invalid Start Date",
                 EndDate = "Invalid End Date",
             },"test1234"));
+        }
+
+        [TestMethod]
+        public void RentProduct_StartEndDateSame_ShouldThrowException()
+        {
+            mockUserData.Setup(x => x.GetUsers()).Returns(MockData.customersList.AsQueryable());
+
+            mockProductData.Setup(p => p.GetProducts()).Returns(MockData.productList.AsQueryable);
+
+            mockRentalData.Setup(r => r.AddRental(It.IsAny<Rental>()));
+
+            Assert.ThrowsException<Exception>(() => business.RentProduct(1, new RentProductDTO
+            {
+                StartDate = DateTime.Now.AddDays(1).ToString(),
+                EndDate = DateTime.Now.AddDays(1).ToString(),
+            }, "test1234"));
         }
         [TestMethod]
 
@@ -223,6 +276,21 @@ namespace RentJunction_Tests.BusinessTest
         }
 
         [TestMethod]
+        public void ExtendRentPeriod_NotRentedProduct_ShouldThrowException()
+        {
+            mockUserData.Setup(x => x.GetUsers()).Returns(MockData.customersList.AsQueryable());
+
+            mockProductData.Setup(p => p.GetProducts()).Returns(MockData.productList.AsQueryable);
+
+            mockRentalData.Setup(r => r.GetRentalData()).Returns(MockData.rentalData.AsQueryable);
+
+            Assert.ThrowsException<NullReferenceException>(() => business.ExtendRentPeriod(1234, new ExtendRentDTO
+            {
+                NewEndDate = DateTime.Today.AddDays(5).ToString()
+            }, "test1234"));
+        }
+
+        [TestMethod]
         public void ViewListedProduct_FetchListOfProducts_ReturnsList()
         {
             mockProductData.Setup(p => p.GetProducts()).Returns(MockData.productList.AsQueryable());
@@ -242,6 +310,16 @@ namespace RentJunction_Tests.BusinessTest
 
             Assert.ThrowsException<Exception>(() => business.ViewListedProducts("Username"));
         }
-    
+
+        [TestMethod]
+        public void ViewListedProduct_ProductUnavailable_ShouldThrowException()
+        {
+
+            mockProductData.Setup(p => p.GetProducts()).Returns(new List<Product>().AsQueryable);
+            mockUserData.Setup(u => u.GetUsers()).Returns(MockData.ownerList.AsQueryable());
+
+            Assert.ThrowsException<Exception>(() => business.ViewListedProducts("test1234"));
+        }
+
     }
 }

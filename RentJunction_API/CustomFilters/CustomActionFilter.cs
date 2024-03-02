@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RentJunction_API.CustomFilters
 {
+    [ExcludeFromCodeCoverage]
     public class CustomActionFilter : IActionFilter
     {
         private readonly ILogger<CustomActionFilter> logger;

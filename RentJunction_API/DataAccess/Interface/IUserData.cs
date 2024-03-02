@@ -11,6 +11,7 @@ namespace RentJunction_API.DataAccess.Interface
         Task<IdentityResult> CreateUserAsync(IdentityUser user, string password);
         Task DeleteUser(User user, IdentityUser userDelete);
         IQueryable<User> GetUsers();
+        Task<User> GetUserByUsername(string username);
         Task AddToRole(IdentityUser user, string role);
     }
 }

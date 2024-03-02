@@ -24,12 +24,20 @@ namespace RentJunction_API.Business
         public IQueryable<User> GetCustomers()
         {
             var customers = userData.GetUsers().Where(user => user.RoleId == RolesEnum.Customer);
+            if(customers.Count() == 0)
+            {
+                throw new Exception("No customers available");
+            }
             return customers;
         } 
         
         public IQueryable<User> GetOwners()
         {
             var owners = userData.GetUsers().Where(user => user.RoleId == RolesEnum.Owner);
+            if (owners.Count() == 0)
+            {
+                throw new Exception("No owners available");
+            }
             return owners;
         }
 

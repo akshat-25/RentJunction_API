@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace RentJunction_API.Helper
 {
+    [ExcludeFromCodeCoverage]
     public class HttpStatusCodeException : Exception
     {
         public HttpStatusCode StatusCode { get; set; }

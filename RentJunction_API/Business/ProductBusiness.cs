@@ -55,21 +55,22 @@ namespace RentJunction_API.Business
 
         }
         public void AddProduct(AddProductDTO product,string username)
-        {   
-                var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
-            
-                Product newProduct = new Product()
-                {
-                    Name = product.Name,
-                    City = product.City,
-                    Description = product.Description,
-                    Rent = product.Rent,
-                    CategoryId = product.CategoryId,
-                    UserId = userId
-                };
+        {
+            var userId = userData.GetUsers().FirstOrDefault(user => user.UserName.Equals(username)).Id;
 
-                productsData.AddProduct(newProduct);
-                    
+            Product newProduct = new Product()
+            {
+                Name = product.Name,
+                City = product.City,
+                Description = product.Description,
+                Rent = product.Rent,
+                CategoryId = product.CategoryId,
+                UserId = userId
+            };
+
+            productsData.AddProduct(newProduct);
+
+
         }
 
         public IQueryable<Product> ViewListedProducts(string username)
@@ -110,7 +111,7 @@ namespace RentJunction_API.Business
 
            if(rentalData.GetRentalData().FirstOrDefault(rental => rental.ProductId  == productId) != null)
            {
-                return null;
+               throw new Exception("No Product Rented..");
            }
             return product;
         }
@@ -180,7 +181,7 @@ namespace RentJunction_API.Business
 
             var product = productsData.GetProducts().FirstOrDefault(product => product.Id == id);
 
-            if(rentalProduct == null) { throw new Exception("No Product Found.."); }
+            if(rentalProduct == null) { throw new NullReferenceException("No Product Found.."); }
 
             DateTime prevEndDate;
             DateTime newEndDate;

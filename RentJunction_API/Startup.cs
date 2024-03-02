@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RentJunction_API.Business;
 using RentJunction_API.Business.Interface;
@@ -69,15 +72,23 @@ namespace RentJunction_API
             services.AddScoped<IProductsData, ProductsData>();
             services.AddScoped<IRentalData, RentalData>();
             services.AddScoped<CustomActionFilter>();
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin",
+                    builder => builder.WithOrigins("http://localhost:4200") 
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
             services.AddHttpContextAccessor();
 
-                   
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider,ILoggerProvider logger)
         {
+            
 
             if (env.IsDevelopment())
             {
@@ -85,7 +96,7 @@ namespace RentJunction_API
             }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
+            app.UseCors("AllowOrigin");
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -94,6 +105,7 @@ namespace RentJunction_API
             });
 
             app.UseRouting();
+            
            
             app.UseAuthentication();
 
@@ -101,6 +113,7 @@ namespace RentJunction_API
 
             app.UseEndpoints(endpoints =>
             {
+               
                 endpoints.MapControllers();
             });
 

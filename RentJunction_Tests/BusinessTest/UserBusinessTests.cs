@@ -6,6 +6,7 @@ using RentJunction_API.DataAccess;
 using RentJunction_API.DataAccess.Interface;
 using RentJunction_API.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,6 +39,14 @@ namespace RentJunction_Tests.BusinessTest
 
             Assert.IsNotNull(result);
         }
+        
+        [TestMethod]
+        public void GetCustomers_ExceptionThrown()
+        {
+            mockUserData.Setup(x => x.GetUsers()).Returns(new List<User>().AsQueryable);
+            
+            Assert.ThrowsException<Exception>(() => business.GetCustomers());
+        }
 
        
         [TestMethod]
@@ -50,6 +59,14 @@ namespace RentJunction_Tests.BusinessTest
             Assert.IsNotNull(result);
         }
 
+
+        [TestMethod]
+        public void GetOwners_ExceptionThrown()
+        {
+            mockUserData.Setup(x => x.GetUsers()).Returns(new List<User>().AsQueryable);
+
+            Assert.ThrowsException<Exception>(() => business.GetOwners());
+        }
         [TestMethod]
 
         public void DeleteUser_ValidId_ShouldDeleteUser()
@@ -66,6 +83,7 @@ namespace RentJunction_Tests.BusinessTest
             mockUserData.Verify(u => u.DeleteUser(It.IsAny<User>(), It.IsAny<IdentityUser>()), Times.Once);
         }
 
+       
         [TestMethod]
 
         public async Task DeleteUser_IdNotExist_ShouldThrowException()

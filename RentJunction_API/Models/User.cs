@@ -21,6 +21,7 @@ namespace RentJunction_API.Models
 
         [ForeignKey("IdentityUser")]
         public string? UserId { get; set; }
+
         [JsonIgnore]
         public IdentityUser IdentityUser { get; set; }
     }

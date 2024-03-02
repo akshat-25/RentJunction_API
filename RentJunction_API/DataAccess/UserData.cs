@@ -35,6 +35,10 @@ namespace RentJunction_API.DataAccess
             return appDbContext.Users;
         }
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+             return appDbContext.Users.Where(user => user.UserName.Equals(username)).FirstOrDefault();
+        }
         public async Task DeleteUser(User user, IdentityUser userDelete)
         {
             await DeleteUserAsync(userDelete);

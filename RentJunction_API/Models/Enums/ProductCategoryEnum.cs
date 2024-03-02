@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RentJunction_API.Models.Enums
 {
-    
+  
     public enum ProductCategoryEnum : int
     {
       

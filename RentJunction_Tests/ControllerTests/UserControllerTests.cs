@@ -5,6 +5,10 @@ using Moq;
 using RentJunction_API.Business.Interface;
 using RentJunction_API.Controllers;
 using RentJunction_API.DataAccess;
+using RentJunction_API.Helper;
+using RentJunction_API.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,6 +38,14 @@ namespace RentJunction_Tests.ControllerTests
         }
 
         [TestMethod]
+
+        public void GetCustomer_ThrowException_ShouldThrowException()
+        {
+            mockUserBusiness.Setup(x => x.GetCustomers()).Returns(new List<User>().AsQueryable());
+
+            Assert.ThrowsException<HttpStatusCodeException>(() =>  controller.GetCustomers());
+        }
+        [TestMethod]
         public void GetOwners()
         {
             mockUserBusiness.Setup(x => x.GetOwners()).Returns(MockData.ownerList.AsQueryable());
@@ -41,6 +53,14 @@ namespace RentJunction_Tests.ControllerTests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetOwners_ThrowException_ShouldThrowException()
+        {
+            mockUserBusiness.Setup(x => x.GetOwners()).Returns(new List<User>().AsQueryable());
+
+            Assert.ThrowsException<HttpStatusCodeException>(() => controller.GetOwners());
         }
 
         [TestMethod]
@@ -57,6 +77,16 @@ namespace RentJunction_Tests.ControllerTests
 
             Assert.IsNotNull(result);
             Assert.AreEqual("Customer Deleted Successfully..", okResult.Value);
+        }
+
+        [TestMethod]
+
+        public async Task DeleteUser_ThrowException_ShouldThrowException()
+        {
+            mockUserBusiness.Setup(x => x.DeleteUser(It.IsAny<int>())).ThrowsAsync(new System.Exception());
+
+            await Assert.ThrowsExceptionAsync<Exception>(() =>  controller.DeleteUser(1));
+
         }
     }
 }

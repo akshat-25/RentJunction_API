@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RentJunction_API.Models
 {
+    [ExcludeFromCodeCoverage]
     public class ErrorResponseModel
     {
         public int StatusCode { get; set; }
